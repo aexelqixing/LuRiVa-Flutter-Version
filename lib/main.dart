@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: DaysSessions(),
+      home: DaysSessions(day: DateTime.now().add(Duration(days: 2)),),
       debugShowCheckedModeBanner: false,
     );
   }
