@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:luriva_flutter_ver/screens/days_sessions.dart';
 import 'package:luriva_flutter_ver/themes/light_pink_theme.dart';
 
-void main() {
+void main() async {
+  // initialize hive
+  await Hive.initFlutter();
+
+  // open multiple boxes
+  await Hive.openBox("General_Database");
+  await Hive.openBox("Session_Database");
+
   runApp(const MyApp());
 }
 

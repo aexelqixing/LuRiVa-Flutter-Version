@@ -24,3 +24,18 @@ String formatWeekday(int weekdayNum) {
 String formatStartAndEnd(DateTime startTime, DateTime endTime) {
   return "${DateFormat('kk:mm').format(startTime)} - ${DateFormat('kk:mm').format(endTime)}";
 }
+
+/// Converts a String yyyymmdd to a DateTime object - from https://github.com/mitchkoko/HabitTrackerFlutter/blob/main/lib/datetime/date_time.dart
+DateTime createDateTimeObject(String yyyymmdd) {
+  int yyyy = int.parse(yyyymmdd.substring(0, 4));
+  int mm = int.parse(yyyymmdd.substring(4, 6));
+  int dd = int.parse(yyyymmdd.substring(6, 8));
+
+  DateTime dateTimeObject = DateTime(yyyy, mm, dd);
+  return dateTimeObject;
+}
+
+/// Converts a DateTime object into a String yyyymmdd
+String convertDateTimeToString(DateTime datetime) {
+  return DateFormat('yyyyMMdd').format(datetime);
+}

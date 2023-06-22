@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:intl/intl.dart';
 import 'package:luriva_flutter_ver/themes/light_pink_theme.dart';
-
-import '../datetime/formatting_datetime.dart';
 
 /// the 'tile' for a single session
 class SessionTile extends StatelessWidget {
@@ -11,10 +8,11 @@ class SessionTile extends StatelessWidget {
   final String sessionName;
   final String sessionDescription;
   final int index;
+  final bool isBlockout;
 
   /// the start and end date of each session
-  final DateTime startTime;
-  final DateTime endTime;
+  final String startTime;
+  final String endTime;
 
   final Function(BuildContext)? deleteTapped;
 
@@ -26,7 +24,7 @@ class SessionTile extends StatelessWidget {
     required this.index,
     required this.startTime,
     required this.endTime,
-    required this.deleteTapped,
+    required this.deleteTapped, required this.isBlockout,
   });
 
   // build the actual tile
@@ -50,7 +48,7 @@ class SessionTile extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-              color: mintyrose,
+              color: isBlockout ? blockout : mintyrose,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 // shadow on the bottom right
@@ -92,17 +90,19 @@ class SessionTile extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        formatStartAndEnd(startTime, endTime),
+                        "$startTime - $endTime",
                         style: TextStyle(
                             color: Colors.grey.shade600, fontSize: 20),
                       ),
                       SizedBox(
                         height: 6,
                       ),
+                      if (!sessionDescription.isEmpty) ...[
                       Text(
                         sessionDescription,
                         style: TextStyle(fontSize: 15),
                       ),
+    ]
                     ],
                   ),
                 ],

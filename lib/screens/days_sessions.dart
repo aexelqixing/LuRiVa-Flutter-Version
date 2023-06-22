@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:luriva_flutter_ver/components/session_tile.dart';
+import 'package:luriva_flutter_ver/data/session_database.dart';
 import 'package:luriva_flutter_ver/themes/light_pink_theme.dart';
 
 import '../datetime/formatting_datetime.dart';
@@ -19,20 +21,21 @@ class DaysSessions extends StatefulWidget {
 }
 
 class _DaysSessionsState extends State<DaysSessions> {
-  List sessions = [
-    [
-      "HUM Reading",
-      "Reading on the Enlightenment",
-      DateTime.now().add(Duration(minutes: 5)),
-      DateTime.now().add(Duration(minutes: 10))
-    ],
-    [
-      "Exeter Problems",
-      "Pages 62, 63, Problem 5-10",
-      DateTime.now().add(Duration(minutes: 15)),
-      DateTime.now().add(Duration(minutes: 25))
-    ],
-  ];
+  SessionDatabase sd = SessionDatabase();
+  final _generalDatabase = Hive.box("General_Database");
+
+  @override
+  void initState() {
+    if (_generalDatabase.get("VERSION") == null) {
+      sd.createDefaultData();
+    }
+    else {
+      sd.loadData();
+    }
+
+    sd.updateDatabase();
+    super.initState();
+  }
 
   /// Returns the title for the screen displayed at the top
   ///
@@ -51,8 +54,13 @@ class _DaysSessionsState extends State<DaysSessions> {
   /// Delete Session
   void deleteSession(int index) {
     setState(() {
-      sessions.removeAt(index);
+      sd.sessions.removeAt(index);
     });
+  }
+
+  /// Update All Sessions
+  void saveSessions() {
+    sd.updateDatabase();
   }
 
   @override
@@ -68,22 +76,22 @@ class _DaysSessionsState extends State<DaysSessions> {
         children: [
           Expanded(
             child: ListView.builder(
-                itemCount: sessions.length,
+                itemCount: sd.sessions.length,
                 itemBuilder: (context, index) {
                   return SessionTile(
-                    sessionName: sessions[index][0],
-                    sessionDescription: sessions[index][1],
+                    sessionName: sd.sessions[index][0],
+                    sessionDescription: sd.sessions[index][1],
                     index: index,
-                    startTime: sessions[index][2],
-                    endTime: sessions[index][3],
-                    deleteTapped: (context) => deleteSession(index),
+                    startTime: sd.sessions[index][2],
+                    endTime: sd.sessions[index][3],
+                    deleteTapped: (context) => deleteSession(index), isBlockout: sd.sessions[index][4],
                   );
                 }),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-                onPressed: () {},
+                onPressed: saveSessions,
                 style: ElevatedButton.styleFrom(
                     backgroundColor: amaranth,
                     foregroundColor: Colors.black,
